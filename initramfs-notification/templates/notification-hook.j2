@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# {{ ansible_managed }}
+
+# Initramfs hook to include a notification script
+
+PREREQ=""
+
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+    prereqs
+    exit 0
+    ;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+
+# Ensure curl is available in initramfs
+copy_exec /usr/bin/curl bin 
+
+# Copy the notification script into initramfs
+copy_exec {{ notification_script_path }} bin 
+
+# Copy the configuration file into initramfs  
+copy_file {{ _notification_config_file }} {{ _notification_config_file }}
+
+echo "Ran hook for notifications!"

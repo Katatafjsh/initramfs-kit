@@ -1,0 +1,28 @@
+---
+# Define channel-specific settings
+
+_notification_configs:
+  telegram:
+    script_file: "notify-telegram.sh"
+    config_file: "/etc/default/telegram-env"
+    config_template: "telegram-env.j2"
+
+  # Future providers can be added...
+
+  # slack:
+  #   script_file: "notify-slack.sh"
+  #   config_file: "/etc/default/slack-env"
+  #   config_template: "slack-env.j2"
+
+  # discord:
+  #   script_file: "notify-discord.sh"
+  #   config_file: "/etc/default/discord-env"
+  #   config_template: "discord-env.j2"
+
+
+# Current channel configuration
+
+_current_config: "{{ _notification_configs[notification_channel] }}"
+_notification_script_file: "{{ _current_config.script_file }}"
+_notification_config_file: "{{ _current_config.config_file }}"
+_notification_config_template: "{{ _current_config.config_template }}"

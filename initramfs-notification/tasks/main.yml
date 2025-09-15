@@ -1,0 +1,43 @@
+---
+- name: Fail if no telegram credentials provided
+  ansible.builtin.fail:
+    msg: |
+      Telegram bot token and chat ID are required!
+      Please set 'telegram_bot_token' and 'telegram_chat_id'.
+  when: telegram_bot_token == "" or telegram_chat_id == ""
+
+- name: Copy notification script for current channel
+  ansible.builtin.copy:
+    src: "{{ _notification_script_file }}"
+    dest: "{{ notification_script_path }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Update initramfs
+
+- name: Generate notification configuration for current channel
+  ansible.builtin.template:
+    src: "{{ _notification_config_template }}"
+    dest: "{{ _notification_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Update initramfs
+
+- name: Create initramfs hook for notification script
+  ansible.builtin.template:
+    src: notification-hook.j2
+    dest: "{{ initramfs_hooks_dir }}/{{ notification_hook_name }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Update initramfs
+
+- name: Create initramfs script to trigger notification
+  ansible.builtin.template:
+    src: notification-script.j2
+    dest: "{{ initramfs_scripts_dir }}/{{ notification_script_stage }}/{{ notification_script_name }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Update initramfs

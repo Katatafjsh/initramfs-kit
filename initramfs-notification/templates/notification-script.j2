@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# {{ ansible_managed }}
+
+# Initramfs script to send notification
+
+PREREQ="{{ notification_script_prereq }}"
+
+prereqs()
+{
+    echo "$PREREQ"  
+}
+
+case $1 in
+prereqs)
+    prereqs
+    exit 0
+    ;;
+esac
+
+sleep 5
+echo "Sending notification..." > /dev/console
+/usr/bin/notify "{{ notification_message }}" || { echo "Failed!" > /dev/console; exit 0; }
+echo "Sent!" > /dev/console

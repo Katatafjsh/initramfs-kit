@@ -1,0 +1,19 @@
+---
+# Currently only 'telegram' is implemented
+notification_channel: telegram
+
+telegram_bot_token: "" # Telegram bot token
+telegram_chat_id: ""   # Telegram chat ID
+
+
+notification_script_path: /usr/local/bin/notify
+notification_message: "Node [{{ ansible_hostname }}] awaits unlocking..."
+
+initramfs_dir: "/etc/initramfs-tools"
+initramfs_hooks_dir: "{{ initramfs_dir }}/hooks"
+initramfs_scripts_dir: "{{ initramfs_dir }}/scripts"
+
+notification_hook_name: notification
+notification_script_stage: init-premount # When to run notification (initramfs stages)
+notification_script_name: notification
+notification_script_prereq: ""
