@@ -1,0 +1,36 @@
+---
+- name: Configure basic network
+  hosts: all
+  become: true
+  tasks:
+    - name: Set dhcp network config for initramfs
+      ansible.builtin.copy:
+        dest: /etc/initramfs-tools/conf.d/network
+        content: |
+         IP="dhcp"
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Update initramfs
+      ansible.builtin.command: update-initramfs -u
+      changed_when: true
+
+- name: Configure initramfs dropbear
+  hosts: all
+  become: true
+  vars:
+    dropbear_ssh_keys_unlock:
+      - 'ssh-rsa AAAAC3Nza...'          # TODO: Add your authorized public key
+
+    tailscale_authkey: 'tskey-auth-xxx' # TODO: Add your tailscale auth key. For details, see: initramfs-tailscale/templates/tailscale-config.j2
+
+    telegram_bot_token: '...'           # TODO: Add your telegram bot token
+    telegram_chat_id: '...'             # TODO: Add your telegram chat id
+
+    notification_message: "Node $(hostname) [$(ip -f inet addr show tailscale0 | awk '/inet / {print $2}')] is awaiting unlock..."
+    notification_script_prereq: 'tailscale'
+
+  roles:
+    - initramfs-dropbear
+    - initramfs-tailscale
+    - initramfs-notification
