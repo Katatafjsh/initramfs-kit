@@ -26,7 +26,7 @@ dropbear_port: 2222
 dropbear_options: "-s -j -k -I 60 -R -F"
 
 # Interface management
-dropbear_ifdown: "*"                      # Before continuing boot, "*" brings down all interfaces, "none" keeps them up
+dropbear_ifdown: "*" # Before continuing boot, "*" brings down all interfaces, "none" keeps them up
 dropbear_shutdown_timeout: 60
 
 # Restrictions for authorized_keys

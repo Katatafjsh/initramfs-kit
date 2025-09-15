@@ -1,13 +1,13 @@
 ---
 - name: Install dropbear packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ dropbear_packages }}"
     state: present
-    update_cache: yes
+    update_cache: true
   register: dropbear_packages_installed
 
 - name: Ensure dropbear initramfs directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ dropbear_initramfs_dir }}"
     state: directory
     owner: root
@@ -15,14 +15,14 @@
     mode: '0700'
 
 - name: Fail if no public ssh keys provided
-  fail:
+  ansible.builtin.fail:
     msg: |
-      No authorized keys provided! 
+      No authorized keys provided!
       Please set 'dropbear_ssh_keys_unlock'.
   when: dropbear_ssh_keys_unlock | length == 0
 
 - name: Generate authorized_keys for dropbear
-  template:
+  ansible.builtin.template:
     src: authorized_keys.j2
     dest: "{{ dropbear_authorized_keys_file }}"
     owner: root
@@ -31,7 +31,7 @@
   notify: Update initramfs
 
 - name: Generate configuration for dropbear
-  template:
+  ansible.builtin.template:
     src: dropbear.conf.j2
     dest: "{{ dropbear_config_path }}"
     owner: root

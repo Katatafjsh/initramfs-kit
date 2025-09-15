@@ -1,6 +1,6 @@
 ---
 - name: Ensure tailscale keyring directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ _tailscale_keyring_dir }}"
     state: directory
     mode: '0755'
@@ -8,7 +8,7 @@
     group: root
 
 - name: Download tailscale gpg key
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ _tailscale_keyring_url }}"
     dest: "{{ _tailscale_keyring_file }}"
     mode: '0644'
@@ -17,7 +17,7 @@
   register: tailscale_keyring_downloaded
 
 - name: Download tailscale repository configuration
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ _tailscale_repo_url }}"
     dest: "{{ _tailscale_repo_file }}"
     mode: '0644'
@@ -25,10 +25,8 @@
     group: root
   register: tailscale_repo_added
 
-# Repo setup for tailscale-initramfs
-
 - name: Ensure tailscale-initramfs keyring directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ _tailscale_initramfs_keyring_dir }}"
     state: directory
     mode: '0755'
@@ -36,7 +34,7 @@
     group: root
 
 - name: Download tailscale-initramfs gpg key
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ _tailscale_initramfs_keyring_url }}"
     dest: "{{ _tailscale_initramfs_keyring_file }}"
     mode: '0644'
@@ -45,7 +43,7 @@
   register: tailscale_initramfs_keyring_downloaded
 
 - name: Add tailscale-initramfs repository
-  copy:
+  ansible.builtin.copy:
     content: "{{ _tailscale_initramfs_repo_line }}"
     dest: "{{ _tailscale_initramfs_repo_file }}"
     mode: '0644'
@@ -53,30 +51,28 @@
     group: root
   register: tailscale_initramfs_repo_added
 
-# Update cache
-
 - name: Update apt cache after adding repositories
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
   when: >
-    tailscale_keyring_downloaded.changed or 
+    tailscale_keyring_downloaded.changed or
     tailscale_repo_added.changed or
     tailscale_initramfs_keyring_downloaded.changed or
     tailscale_initramfs_repo_added.changed
 
 - name: Install tailscale
-  apt:
-    name: "{{ tailscale_packages }}" 
+  ansible.builtin.apt:
+    name: "{{ tailscale_packages }}"
     state: present
 
 - name: Install tailscale-initramfs
-  apt:
+  ansible.builtin.apt:
     name: "{{ tailscale_initramfs_packages }}"
     state: present
   notify: Update initramfs
 
 - name: Ensure tailscale initramfs directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ tailscale_initramfs_dir }}"
     state: directory
     owner: root
@@ -84,20 +80,20 @@
     mode: '0755'
 
 - name: Fail if no tailscale auth key provided
-  fail:
+  ansible.builtin.fail:
     msg: |
-      No tailscale auth key provided! 
-      Please set 'tailscale_authkey'. 
+      No tailscale auth key provided!
+      Please set 'tailscale_authkey'.
 
       To generate an authentication key:
       - Go to https://login.tailscale.com/admin/settings/keys
       - Generate pre-approved key type with tag [tag:initramfs]
-      
+
       Security warning: This key will be stored unencrypted in initramfs!
   when: tailscale_authkey == ""
 
 - name: Generate tailscale initramfs config
-  template:
+  ansible.builtin.template:
     src: tailscale-config.j2
     dest: "{{ tailscale_initramfs_config_file }}"
     owner: root
@@ -106,7 +102,7 @@
   notify: Update initramfs
 
 - name: Display hint - tailscale acls
-  debug:
+  ansible.builtin.debug:
     msg: |
       For enhanced tailnet security, configure grants or acls (legacy)!
       - Go to https://login.tailscale.com/admin/acls

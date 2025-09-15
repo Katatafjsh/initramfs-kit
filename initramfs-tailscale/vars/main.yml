@@ -3,7 +3,6 @@ _tailscale_os_family: debian
 _tailscale_os_release: trixie
 
 # Repository tailscale
-
 _tailscale_keyring_dir: /usr/share/keyrings
 _tailscale_keyring_file: "{{ _tailscale_keyring_dir }}/tailscale-archive-keyring.gpg"
 _tailscale_keyring_url: "https://pkgs.tailscale.com/stable/{{ _tailscale_os_family }}/{{ _tailscale_os_release }}.noarmor.gpg"
@@ -11,7 +10,6 @@ _tailscale_repo_file: /etc/apt/sources.list.d/tailscale.list
 _tailscale_repo_url: "https://pkgs.tailscale.com/stable/{{ _tailscale_os_family }}/{{ _tailscale_os_release }}.tailscale-keyring.list"
 
 # Repository tailscale-initramfs
-
 _tailscale_initramfs_keyring_dir: /usr/local/share/keyrings
 _tailscale_initramfs_keyring_file: "{{ _tailscale_initramfs_keyring_dir }}/tailscale-initramfs-keyring.asc"
 _tailscale_initramfs_keyring_url: https://darkrain42.github.io/tailscale-initramfs/keyring.asc
