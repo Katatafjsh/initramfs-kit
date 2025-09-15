@@ -1,0 +1,27 @@
+---
+# Tailscale packages (required)
+
+tailscale_packages:
+  - libxtables12=1.8.9-2
+  - tailscale
+
+# Initramfs packages (required, custom repository)
+
+tailscale_initramfs_packages:
+  - tailscale-initramfs
+
+# Paths
+
+tailscale_initramfs_dir: /etc/tailscale/initramfs
+tailscale_initramfs_config_file: "{{ tailscale_initramfs_dir }}/config"
+
+# Configuration
+
+tailscale_authkey: ""                         # Authentication key (required)
+tailscale_hostname: "${HOSTNAME}-initramfs"   # Custom hostname
+tailscale_fallback_dns: "9.9.9.9"             # Fallback dns servers
+tailscale_options: ""                         # Additional options for tailscale up
+tailscaled_options: ""                        # Additional options for tailscaled daemon
+tailscale_disable_ssh: true                   # Set to empty string to enable tailscale-ssh  
+tailscale_logout: true                        # Log out before continuing boot
+tailscale_ifdown: "*"                         # Interface pattern to bring down before continuing boot 

@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+
+# Configuration options for the tailscale-initramfs boot scripts.
+
+# Tailscale auth key (required) | Warning: this is stored unencrypted in the initramfs.
+# Opinionated key traits: Pre-Approved (required), Ephemeral (optional), Reusable (optional), Tagged (recommended)
+
+TAILSCALE_AUTHKEY="{{ tailscale_authkey }}"
+
+# Hostname for this initramfs node (default: ${HOSTNAME}-initramfs)
+{% if tailscale_hostname != "" %}
+TAILSCALE_HOSTNAME="{{ tailscale_hostname }}"
+{% else %}
+TAILSCALE_HOSTNAME="${HOSTNAME}-initramfs"
+{% endif %}
+
+# Additional options for 'tailscale up' command
+{% if tailscale_options != "" %}
+TAILSCALE_OPTIONS="{{ tailscale_options }}"
+{% endif %}
+
+# Addtional options for tailscaled daemon
+{% if tailscaled_options != "" %}
+TAILSCALED_OPTIONS="{{ tailscaled_options }}"
+{% endif %}
+
+# Disable tailscale ssh server (empty indicates ssh enabled)
+{% if tailscale_disable_ssh %}
+TAILSCALE_DISABLE_SSH="true"
+{% else %}
+{% endif %}
+
+# Log out of tailscale before continuing boot
+{% if tailscale_logout %}
+TAILSCALE_LOGOUT="true"
+{% endif %}
+
+# Fallback dns servers
+FALLBACK_DNS_SERVERS="{{ tailscale_fallback_dns }}"
+
+# Interface pattern to bring down before continuing boot
+{% if tailscale_ifdown != "" %}
+IFDOWN="{{ tailscale_ifdown }}"
+{% endif %}
