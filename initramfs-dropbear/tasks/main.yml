@@ -1,0 +1,40 @@
+---
+- name: Install dropbear packages
+  apt:
+    name: "{{ dropbear_packages }}"
+    state: present
+    update_cache: yes
+  register: dropbear_packages_installed
+
+- name: Ensure dropbear initramfs directory exists
+  file:
+    path: "{{ dropbear_initramfs_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Fail if no public ssh keys provided
+  fail:
+    msg: |
+      No authorized keys provided! 
+      Please set 'dropbear_ssh_keys_unlock'.
+  when: dropbear_ssh_keys_unlock | length == 0
+
+- name: Generate authorized_keys for dropbear
+  template:
+    src: authorized_keys.j2
+    dest: "{{ dropbear_authorized_keys_file }}"
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Update initramfs
+
+- name: Generate configuration for dropbear
+  template:
+    src: dropbear.conf.j2
+    dest: "{{ dropbear_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Update initramfs

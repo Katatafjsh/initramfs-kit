@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+{% for key in dropbear_ssh_keys_unlock %}
+  {%- if dropbear_ssh_keys_unlock_options | length > 0 %}
+    {%- set comma = joiner(',') %}
+    {%- for option in dropbear_ssh_keys_unlock_options %}
+      {{- comma() }}{{ option }}
+    {%- endfor %}
+    {{- " " }}
+  {%- endif %}
+  {{- key }}
+{% endfor %}

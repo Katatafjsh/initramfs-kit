@@ -1,0 +1,37 @@
+---
+# List of public keys tailored for cryptroot-unlock (required)
+dropbear_ssh_keys_unlock: []
+#  - ssh-rsa AAAAC3Nza...
+
+# Packages to install
+dropbear_packages:
+  - dropbear-initramfs
+  - dropbear-bin
+
+# Paths
+dropbear_initramfs_dir: /etc/dropbear/initramfs
+dropbear_config_path: "{{ dropbear_initramfs_dir }}/dropbear.conf"
+dropbear_authorized_keys_file: "{{ dropbear_initramfs_dir }}/authorized_keys"
+
+# Dropbear port
+dropbear_port: 2222
+
+# Dropbear options (excluding port):
+# -s = Disable password authentication
+# -j = Disable local port forwarding
+# -k = Disable remote port forwarding
+# -I = Idle timeout in seconds before disconnecting inactive sessions
+# -R = Generate hostkeys automatically
+# -F = Don't fork into background
+dropbear_options: "-s -j -k -I 60 -R -F"
+
+# Interface management
+dropbear_ifdown: "*"                      # Before continuing boot, "*" brings down all interfaces, "none" keeps them up
+dropbear_shutdown_timeout: 60
+
+# Restrictions for authorized_keys
+dropbear_ssh_keys_unlock_options:
+  - 'command="/usr/bin/cryptroot-unlock"' # Argument must be quoted, even it does not contain any spaces
+  - no-agent-forwarding
+  - no-port-forwarding
+  - no-x11-forwarding
