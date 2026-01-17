@@ -1,7 +1,7 @@
 ---
 # Tailscale packages (required)
 tailscale_packages:
-  - libxtables12=1.8.9-2
+  - libxtables12
   - tailscale
 
 # Initramfs packages (required, custom repository)
