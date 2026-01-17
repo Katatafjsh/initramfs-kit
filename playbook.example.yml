@@ -1,6 +1,7 @@
 ---
 - name: Configure basic network
-  hosts: all
+  hosts: localhost
+  connection: local
   become: true
   tasks:
     - name: Set dhcp network config for initramfs
@@ -16,7 +17,8 @@
       changed_when: true
 
 - name: Configure initramfs dropbear
-  hosts: all
+  hosts: localhost
+  conection: local
   become: true
   vars:
     dropbear_ssh_keys_unlock:
